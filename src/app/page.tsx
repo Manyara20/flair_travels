@@ -1,69 +1,121 @@
-import Image from "next/image";
+import { CtaBand } from "@/components/cta-band";
+import { DestinationIndex } from "@/components/destination-index";
+import { ExpeditionRail } from "@/components/home/expedition-rail";
+import { FieldLogs } from "@/components/home/field-logs";
+import { Hero } from "@/components/home/hero";
+import { Manifesto } from "@/components/home/manifesto";
+import { SeasonScanner } from "@/components/home/season-scanner";
+import { Reveal } from "@/components/reveal";
+import { TourCard } from "@/components/tour-card";
+import { ButtonLink, Eyebrow } from "@/components/ui";
+import { destinations } from "@/data/destinations";
+import { tours } from "@/data/tours";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <Hero />
+      <Manifesto />
+
+      <section id="destinations" className="relative bg-ink">
+        <div className="mx-auto max-w-[1600px] px-4 py-24 sm:px-8 md:py-32">
+          <SectionHead
+            index="01"
+            eyebrow="Destination index"
+            title={
+              <>
+                Eleven places. <span className="font-serif font-normal normal-case text-dust italic">One</span> country.
+              </>
+            }
+            body="Every destination here is one we drive, fly into and know personally. Hover a row to find it on the map."
+            cta={{ href: "/destinations", label: "All destinations" }}
+          />
+          <div className="mt-16">
+            <DestinationIndex items={destinations.slice(0, 8)} />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="relative border-t border-bone/10 bg-ink py-24 md:py-32">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
+          <SectionHead
+            index="02"
+            eyebrow="Expeditions"
+            title={
+              <>
+                Routes <span className="font-serif font-normal normal-case text-laterite italic">already</span> tested
+              </>
+            }
+            body="Six itineraries our guides have refined over many seasons. Use one as it is or as a starting point for your own."
+            cta={{ href: "/tours", label: "Compare expeditions" }}
+          />
         </div>
-      </main>
+        <div className="mt-16">
+          <ExpeditionRail count={tours.length}>
+            {tours.map((t) => (
+              <div key={t.slug} data-rail-item className="w-[85vw] max-w-[440px] shrink-0 snap-start">
+                <TourCard tour={t} className="h-full" />
+              </div>
+            ))}
+          </ExpeditionRail>
+        </div>
+      </section>
+
+      <section id="seasons" className="survey-grid relative scroll-mt-20 border-t border-bone/10 bg-ink">
+        <div className="mx-auto max-w-[1600px] px-4 py-24 sm:px-8 md:py-32">
+          <SectionHead
+            index="03"
+            eyebrow="Season scanner"
+            title={
+              <>
+                When to go, <span className="font-serif font-normal normal-case text-volt italic">month</span> by month
+              </>
+            }
+            body="Kenya has two rainy seasons, and each region responds differently. Pick a month to see which destinations are at their best."
+          />
+          <div className="mt-16">
+            <SeasonScanner />
+          </div>
+        </div>
+      </section>
+
+      <FieldLogs />
+      <CtaBand />
+    </>
+  );
+}
+
+function SectionHead({
+  index,
+  eyebrow,
+  title,
+  body,
+  cta,
+}: {
+  index: string;
+  eyebrow: string;
+  title: React.ReactNode;
+  body: string;
+  cta?: { href: string; label: string };
+}) {
+  return (
+    <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+      <Reveal className="lg:col-span-8">
+        <Eyebrow index={index} className="text-bone/70">
+          {eyebrow}
+        </Eyebrow>
+        <h2 className="mt-6 font-display text-[14vw] leading-[0.86] font-black uppercase sm:text-[9vw] lg:text-[6.5rem]">
+          {title}
+        </h2>
+      </Reveal>
+      <Reveal delay={0.15} className="flex flex-col items-start gap-6 lg:col-span-4">
+        <p className="max-w-md leading-relaxed text-bone/60">{body}</p>
+        {cta && (
+          <ButtonLink href={cta.href} variant="ghost">
+            {cta.label}
+          </ButtonLink>
+        )}
+      </Reveal>
     </div>
   );
 }

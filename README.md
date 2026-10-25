@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flair Travels
 
-## Getting Started
-
-First, run the development server:
+Marketing site for a Kenya tours & travel company, built with Next.js 16 (App Router, Cache Components), React 19, Tailwind CSS 4 and Motion.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Design system: "Zero Line"
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Kenya sits on the equator, so the whole visual language is built around survey and expedition instruments.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Hard edges only.** Radius tokens are removed in `globals.css` (`--radius-*: initial`) and reset globally. Corners are cut with the `chamfer`, `chamfer-tr` and `chamfer-bl` utilities instead.
+- **Palette:** ink `#0c0c0a`, bone `#eee8da`, laterite `#ff4f1f` (Kenyan red earth), volt `#d4ff3a` for live data.
+- **Type:** Big Shoulders (display), Instrument Serif italic (accents), Instrument Sans (body), JetBrains Mono (data labels).
+- **Motifs:** the dashed equator line, survey grids, viewfinder crop marks, coordinates, film grain.
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+| Path | What it is |
+| --- | --- |
+| `src/app/page.tsx` | Home: hero, manifesto, destination index, expeditions rail, season scanner, field logs |
+| `src/app/destinations/[slug]` | Destination pages (statically generated) |
+| `src/app/tours/[slug]` | Expedition itineraries with an animated route map |
+| `src/app/plan` | Route builder form with a server action (`actions.ts`) |
+| `src/data/*` | All content: destinations, tours, site copy, photo credits |
+| `src/components/kenya-map.tsx` | SVG map of Kenya, projected from lat/lon |
+| `src/proxy.ts` | Sends a real 404 for unknown destination/tour slugs |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Before launch
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/plan/actions.ts` validates enquiries but does not deliver them yet. Connect an email provider or CRM where the comment says to.
+- Contact details, stats, testimonials and prices in `src/data/` are placeholders.
+- Photos come from Wikimedia Commons under CC licences. Attribution is listed at `/credits` and must stay published while the photos are in use.
