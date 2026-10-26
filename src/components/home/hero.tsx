@@ -149,7 +149,7 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="relative lg:col-span-4">
+          <div className="relative hidden md:block lg:col-span-4">
             <HeroLiveCard />
             <CropMarks className="-m-3 text-cyan" />
           </div>
