@@ -1,10 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { destinations } from "@/data/destinations";
+import { services } from "@/data/services";
 import { tours } from "@/data/tours";
 
 const known = {
   destinations: new Set(destinations.map((d) => d.slug)),
   tours: new Set(tours.map((t) => t.slug)),
+  services: new Set(services.map((s) => s.slug)),
 };
 
 /**
@@ -21,5 +23,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/destinations/:slug", "/tours/:slug"],
+  matcher: ["/destinations/:slug", "/tours/:slug", "/services/:slug"],
 };

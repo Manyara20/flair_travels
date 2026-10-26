@@ -18,21 +18,24 @@ export default function ToursPage() {
   return (
     <>
       <PageHero
-        index="02"
-        eyebrow="Expeditions"
+        index="S-05"
+        eyebrow="Safari expeditions"
+        photo="river"
+        inset="lioness"
+        alt="A river winding through the Maasai Mara, seen from a balloon"
         title={
           <>
-            Pick a <span className="font-serif font-normal normal-case text-laterite italic">route</span>
+            Pick a <span className="font-serif font-normal normal-case text-blush italic">route</span>
           </>
         }
         intro="Each expedition is a fixed route that we adjust to you. Change the pace, upgrade the camps or add the coast at the end. Every one runs privately, with your own vehicle and guide."
         aside={
-          <p className="font-mono text-[0.65rem] tracking-[0.25em] text-dust uppercase">
+          <p className="font-mono text-[0.65rem] tracking-[0.25em] text-sky uppercase">
             {tours.length} routes · 4–14 days · from {formatUSD(cheapest)} pp
           </p>
         }
       />
-      <section className="bg-ink">
+      <section className="bg-white text-navy">
         <div className="mx-auto max-w-[1600px] px-4 py-16 sm:px-8 md:py-24">
           <TourBrowser cards={cards} />
         </div>

@@ -30,23 +30,26 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: {
-    default: "Flair Travels | Kenya on the Zero Line",
+    default: "Flair Travels | Tours & Travel · Travel made easy",
     template: "%s | Flair Travels",
   },
   description: site.description,
-  keywords: ["Kenya safari", "Maasai Mara", "Amboseli", "Lamu", "Diani", "Kenya tours", "Nairobi travel agency"],
+  keywords: ["Nairobi travel agency", "Kenya safari", "air ticketing Kenya", "visa processing Nairobi", "MICE Kenya", "Maasai Mara", "Dubai holidays", "Seychelles"],
   openGraph: {
-    title: "Flair Travels | Kenya on the Zero Line",
+    title: "Flair Travels | Tours & Travel · Travel made easy",
     description: site.description,
+    url: site.url,
+    siteName: site.name,
     type: "website",
     locale: "en_KE",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0c0c0a",
-  colorScheme: "dark",
+  themeColor: "#2c3c4c",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -58,7 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"
-          className="sr-only z-[70] bg-volt px-4 py-2 font-mono text-xs text-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          className="sr-only z-[70] bg-cyan px-4 py-2 font-mono text-xs text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
         >
           Skip to content
         </a>

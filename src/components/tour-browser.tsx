@@ -26,7 +26,7 @@ export function TourBrowser({ cards }: { cards: Record<string, ReactNode> }) {
 
   return (
     <div>
-      <div className="flex flex-col justify-between gap-6 border-y border-bone/10 py-4 md:flex-row md:items-center">
+      <div className="flex flex-col justify-between gap-6 border-y border-navy/10 py-4 md:flex-row md:items-center">
         <div role="group" aria-label="Filter by style" className="flex flex-wrap">
           {(["All", ...tourStyles] as const).map((s) => (
             <button
@@ -35,7 +35,7 @@ export function TourBrowser({ cards }: { cards: Record<string, ReactNode> }) {
               aria-pressed={style === s}
               onClick={() => setStyle(s)}
               className={`-ml-px border px-4 py-2.5 font-mono text-[0.68rem] tracking-[0.2em] uppercase transition-colors first:ml-0 ${
-                style === s ? "relative z-10 border-laterite bg-laterite text-ink" : "border-bone/20 text-bone/70 hover:text-volt"
+                style === s ? "relative z-10 border-pink bg-pink text-white" : "border-navy/20 text-navy/70 hover:text-pink"
               }`}
             >
               {s}
@@ -45,12 +45,12 @@ export function TourBrowser({ cards }: { cards: Record<string, ReactNode> }) {
             </button>
           ))}
         </div>
-        <label className="flex items-center gap-3 font-mono text-[0.68rem] tracking-[0.2em] text-dust uppercase">
+        <label className="flex items-center gap-3 font-mono text-[0.68rem] tracking-[0.2em] text-navy/60 uppercase">
           Sort
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as Sort)}
-            className="border border-bone/20 bg-ink px-3 py-2.5 text-bone uppercase"
+            className="border border-navy/20 bg-white px-3 py-2.5 text-navy uppercase"
           >
             {sorts.map((s) => (
               <option key={s.value} value={s.value}>

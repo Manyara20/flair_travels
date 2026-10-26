@@ -1,18 +1,23 @@
 export const site = {
   name: "Flair Travels",
+  url: "https://flairtravels.com",
+  tagline: "Tours & Travel",
+  slogan: "Travel made easy",
   description:
-    "Tailor-made safaris, treks and coastal journeys across Kenya, from the Maasai Mara to Lamu. Designed by a Nairobi team that has driven every route.",
-  email: "hello@flairtravels.co.ke",
-  phone: "+254 700 000 000",
-  address: "Riverside Drive, Nairobi, Kenya",
+    "Tours & travel, made easy. Flair Travels is a Nairobi travel company offering air ticketing, hotel reservations, visa processing, airport transfers, safari packages and MICE, with trips across Kenya, Africa and the rest of the world.",
+  email: "info@flairtravels.com",
+  phone: "+254 721 214 428",
+  phoneHref: "tel:+254721214428",
+  whatsappHref: "https://wa.me/254721214428",
+  postal: "P.O. Box 3334-00100",
+  city: "Nairobi, Kenya",
   hq: { lat: -1.2921, lon: 36.8219 },
 };
 
 export const nav = [
-  { href: "/destinations", label: "Destinations", index: "01" },
-  { href: "/tours", label: "Expeditions", index: "02" },
-  { href: "/#seasons", label: "Seasons", index: "03" },
-  { href: "/plan", label: "Plan a trip", index: "04" },
+  { href: "/about", label: "About Us", index: "01", menu: null },
+  { href: "/services", label: "Our Services", index: "02", menu: "services" },
+  { href: "/destinations", label: "Destinations", index: "03", menu: "destinations" },
 ] as const;
 
 export const fieldLogs = [
@@ -25,10 +30,10 @@ export const fieldLogs = [
   },
   {
     quote:
-      "We emailed with a vague idea and a budget. We got back a route with a map, rough drive times and why each stop was there. It was the best planned trip we've done.",
-    name: "Priya M.",
-    origin: "Singapore",
-    trip: "FT-00",
+      "Flights, Schengen visas and hotels for 14 of us to Italy, with nothing missed. They even rebooked two people overnight when a connection was cancelled.",
+    name: "Grace W.",
+    origin: "Nairobi",
+    trip: "ITALY",
   },
   {
     quote:
@@ -40,8 +45,8 @@ export const fieldLogs = [
 ] as const;
 
 export const stats = [
-  { value: "11", label: "Destinations we run ourselves" },
-  { value: "38", label: "Guides, all Kenyan" },
-  { value: "4.9", label: "Average guest rating" },
+  { value: "22", label: "Destinations across three continents" },
+  { value: "6", label: "Services under one roof" },
+  { value: "24/7", label: "Support while you travel" },
   { value: "0°", label: "Latitude: we work on the equator" },
 ] as const;

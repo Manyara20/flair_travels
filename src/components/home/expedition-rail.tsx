@@ -34,11 +34,11 @@ export function ExpeditionRail({ children, count }: { children: ReactNode; count
       </div>
 
       <div className="mx-auto mt-6 flex max-w-[1600px] items-center gap-6 px-4 sm:px-8">
-        <span className="font-mono text-[0.65rem] tracking-[0.2em] text-dust tabular-nums">
+        <span className="font-mono text-[0.65rem] tracking-[0.2em] text-sky/70 tabular-nums">
           {String(Math.min(count, Math.round(progress * (count - 1)) + 1)).padStart(2, "0")} / {String(count).padStart(2, "0")}
         </span>
-        <div className="relative h-px flex-1 bg-bone/15">
-          <span className="absolute inset-y-0 left-0 bg-laterite transition-[width] duration-200" style={{ width: `${Math.max(progress, 0.04) * 100}%` }} />
+        <div className="relative h-px flex-1 bg-white/15">
+          <span className="absolute inset-y-0 left-0 bg-pink transition-[width] duration-200" style={{ width: `${Math.max(progress, 0.04) * 100}%` }} />
         </div>
         <div className="flex">
           {([-1, 1] as const).map((dir) => (
@@ -47,7 +47,7 @@ export function ExpeditionRail({ children, count }: { children: ReactNode; count
               type="button"
               onClick={() => step(dir)}
               aria-label={dir === -1 ? "Previous expedition" : "Next expedition"}
-              className="flex size-12 items-center justify-center border border-bone/20 transition-colors hover:border-volt hover:bg-volt hover:text-ink [&+&]:-ml-px"
+              className="flex size-12 items-center justify-center border border-white/25 transition-colors hover:border-pink hover:bg-pink hover:text-white [&+&]:-ml-px"
             >
               {dir === -1 ? "←" : "→"}
             </button>

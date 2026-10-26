@@ -4,15 +4,27 @@ import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useActionState, useState, type ReactNode } from "react";
 import { type EnquiryState, submitEnquiry } from "@/app/plan/actions";
-import { destinations, getDestination, months } from "@/data/destinations";
+import Image from "next/image";
+import { photos } from "@/assets/photos";
+import { collections, destinations, destinationsIn, getDestination, months } from "@/data/destinations";
 import { tours } from "@/data/tours";
 import { type TierId, estimatePerPerson, tiers } from "@/lib/estimate";
 import { formatUSD } from "@/lib/format";
 import { KenyaMap } from "./kenya-map";
+import { WorldRouteMap } from "./world-route-map";
 
 const initialState: EnquiryState = { status: "idle" };
 
-export function TripBuilder({ initialTour, initialDestination }: { initialTour?: string; initialDestination?: string }) {
+export function TripBuilder({
+  initialTour,
+  initialDestination,
+  placeholder = false,
+}: {
+  initialTour?: string;
+  initialDestination?: string;
+  /** Non-interactive copy shown while the real builder streams in. */
+  placeholder?: boolean;
+}) {
   const presetTour = tours.find((t) => t.slug === initialTour);
   const [route, setRoute] = useState<string[]>(
     presetTour?.route ?? (initialDestination && getDestination(initialDestination) ? [initialDestination] : []),
@@ -39,6 +51,8 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
     }
   };
 
+  const abroad = route.filter((slug) => getDestination(slug)?.collection !== "kenya");
+  const kenyaStops = route.length - abroad.length;
   const perPerson = estimatePerPerson(days, tier, Math.max(route.length, 1));
   const offSeason = route.map(getDestination).filter((d) => d && d.season[month] === 0);
   // Server errors clear as soon as the offending field is fixed.
@@ -56,27 +70,27 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
         initial={{ clipPath: "inset(0 0 100% 0)" }}
         animate={{ clipPath: "inset(0 0 0% 0)" }}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        className="survey-grid border border-volt/40 bg-ink-2 p-8 md:p-16"
+        className="survey-grid border-2 border-cyan bg-sky p-8 text-navy md:p-16"
         role="status"
       >
-        <p className="font-mono text-xs tracking-[0.3em] text-volt uppercase">● Transmission received</p>
+        <p className="font-mono text-xs tracking-[0.3em] text-cyan uppercase">● Transmission received</p>
         <h2 className="mt-6 font-display text-6xl leading-[0.9] font-black uppercase md:text-8xl">
           Asante, {state.name}.
         </h2>
-        <p className="mt-6 max-w-xl text-lg text-bone/75">
+        <p className="mt-6 max-w-xl text-lg text-navy/75">
           A planner in Nairobi is plotting your route now. Expect a mapped itinerary in your inbox within 24 hours.
         </p>
-        <dl className="mt-10 grid max-w-xl grid-cols-2 gap-px bg-bone/10">
-          <div className="bg-ink p-5">
-            <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-dust uppercase">Reference</dt>
+        <dl className="mt-10 grid max-w-xl grid-cols-2 gap-px bg-navy/10">
+          <div className="bg-white p-5">
+            <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-navy/60 uppercase">Reference</dt>
             <dd className="mt-2 font-display text-3xl font-bold">{state.reference}</dd>
           </div>
-          <div className="bg-ink p-5">
-            <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-dust uppercase">Indicative total</dt>
-            <dd className="mt-2 font-display text-3xl font-bold text-laterite">{formatUSD(state.estimate)}</dd>
+          <div className="bg-white p-5">
+            <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-navy/60 uppercase">Indicative total</dt>
+            <dd className="mt-2 font-display text-3xl font-bold text-pink">{formatUSD(state.estimate)}</dd>
           </div>
         </dl>
-        <Link href="/destinations" className="mt-10 inline-block font-mono text-xs tracking-[0.25em] uppercase underline-offset-4 hover:text-volt hover:underline">
+        <Link href="/destinations" className="mt-10 inline-block font-mono text-xs tracking-[0.25em] uppercase underline-offset-4 hover:text-pink hover:underline">
           Keep exploring →
         </Link>
       </motion.div>
@@ -84,7 +98,20 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
   }
 
   return (
-    <form action={formAction} noValidate className="grid gap-12 lg:grid-cols-12">
+    <form
+      action={formAction}
+      noValidate
+      inert={placeholder || undefined}
+      aria-busy={placeholder || undefined}
+      className="relative grid gap-12 lg:grid-cols-12"
+    >
+      {/* Spam honeypot: hidden from people, tempting to bots. */}
+      <div aria-hidden className="absolute -left-[9999px] size-px overflow-hidden">
+        <label>
+          Website
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+        </label>
+      </div>
       {route.map((slug) => (
         <input key={slug} type="hidden" name="destinations" value={slug} />
       ))}
@@ -96,37 +123,54 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
 
       <div className="space-y-16 lg:col-span-7">
         <Step index="01" title="Choose destinations" hint="Tap in the order you want to travel." error={errors.destinations}>
-          <div className="grid grid-cols-2 gap-px bg-bone/10 sm:grid-cols-3">
-            {destinations.map((d) => {
-              const pos = route.indexOf(d.slug);
-              const on = pos > -1;
-              return (
-                <button
-                  key={d.slug}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => toggle(d.slug)}
-                  className={`group relative flex min-h-24 flex-col justify-between p-4 text-left transition-colors ${
-                    on ? "bg-laterite text-ink" : "bg-ink hover:bg-ink-3"
-                  }`}
-                >
-                  <span className="flex items-center justify-between font-mono text-[0.6rem] tracking-[0.2em] uppercase">
-                    <span className={on ? "text-ink/70" : "text-dust"}>{d.code}</span>
-                    <span className={`flex size-6 items-center justify-center border ${on ? "border-ink bg-ink text-laterite" : "border-bone/20"}`}>
-                      {on ? pos + 1 : "+"}
-                    </span>
-                  </span>
-                  <span className="mt-4 font-display text-xl leading-none font-bold uppercase">{d.name}</span>
-                </button>
-              );
-            })}
+          <div className="space-y-6">
+            {collections.map((c) => (
+              <div key={c.id}>
+                <p className="mb-2 font-mono text-[0.6rem] tracking-[0.25em] text-navy/60 uppercase">
+                  <span className="text-pink">{c.index}</span> · {c.label}
+                </p>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
+                  {destinationsIn(c.id).map((d) => {
+                    const pos = route.indexOf(d.slug);
+                    const on = pos > -1;
+                    return (
+                      <button
+                        key={d.slug}
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => toggle(d.slug)}
+                        className={`group relative flex min-h-24 flex-col justify-between overflow-hidden p-3 text-left text-white outline-offset-2 ${
+                          on ? "outline-4 outline-pink" : ""
+                        }`}
+                      >
+                        <Image
+                          src={photos[d.photo]}
+                          alt=""
+                          fill
+                          sizes="(min-width: 1280px) 12vw, (min-width: 640px) 20vw, 45vw"
+                          className="photo-grade object-cover transition-transform duration-700 ease-expo group-hover:scale-110"
+                        />
+                        <span className={`absolute inset-0 transition-colors ${on ? "bg-pink/55" : "bg-navy-deep/55 group-hover:bg-navy-deep/35"}`} />
+                        <span className="relative flex items-center justify-between font-mono text-[0.6rem] tracking-[0.2em] uppercase">
+                          <span>{d.code}</span>
+                          <span className={`flex size-6 items-center justify-center border ${on ? "border-white bg-white text-pink" : "border-white/60"}`}>
+                            {on ? pos + 1 : "+"}
+                          </span>
+                        </span>
+                        <span className="relative mt-4 font-display text-xl leading-none font-black uppercase">{d.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
           <label className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-            <span className="font-mono text-[0.65rem] tracking-[0.2em] text-dust uppercase">Or start from an expedition</span>
+            <span className="font-mono text-[0.65rem] tracking-[0.2em] text-navy/60 uppercase">Or start from an expedition</span>
             <select
               value={tourSlug}
               onChange={(e) => pickTour(e.target.value)}
-              className="flex-1 border border-bone/20 bg-ink px-3 py-3 text-sm"
+              className="flex-1 border border-navy/20 bg-white px-3 py-3 text-sm"
             >
               <option value="">Custom route</option>
               {tours.map((t) => (
@@ -139,15 +183,15 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
         </Step>
 
         <Step index="02" title="When & how long">
-          <p className="mb-3 font-mono text-[0.65rem] tracking-[0.2em] text-dust uppercase">Travel month</p>
-          <div className="grid grid-cols-6 gap-px bg-bone/10 sm:grid-cols-12">
+          <p className="mb-3 font-mono text-[0.65rem] tracking-[0.2em] text-navy/60 uppercase">Travel month</p>
+          <div className="grid grid-cols-6 gap-px bg-navy/10 sm:grid-cols-12">
             {months.map((m, i) => (
               <button
                 key={m}
                 type="button"
                 aria-pressed={month === i}
                 onClick={() => setMonth(i)}
-                className={`py-3 font-mono text-xs uppercase transition-colors ${month === i ? "bg-volt text-ink" : "bg-ink hover:bg-ink-3"}`}
+                className={`py-3 font-mono text-xs uppercase transition-colors ${month === i ? "bg-cyan text-white" : "bg-white hover:bg-mist"}`}
               >
                 {m}
               </button>
@@ -156,8 +200,8 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
 
           <div className="mt-8 grid gap-8 sm:grid-cols-2">
             <div>
-              <label htmlFor="days" className="flex items-baseline justify-between font-mono text-[0.65rem] tracking-[0.2em] text-dust uppercase">
-                Duration <span className="font-display text-3xl font-bold text-bone">{days} days</span>
+              <label htmlFor="days" className="flex items-baseline justify-between font-mono text-[0.65rem] tracking-[0.2em] text-navy/60 uppercase">
+                Duration <span className="font-display text-3xl font-bold text-navy">{days} days</span>
               </label>
               <input
                 id="days"
@@ -166,17 +210,17 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
                 max={21}
                 value={days}
                 onChange={(e) => setDays(Number(e.target.value))}
-                className="mt-4 w-full accent-laterite"
+                className="mt-4 w-full accent-pink"
               />
             </div>
             <div>
-              <p className="font-mono text-[0.65rem] tracking-[0.2em] text-dust uppercase">Travellers</p>
-              <div className="mt-3 flex items-stretch border border-bone/20">
+              <p className="font-mono text-[0.65rem] tracking-[0.2em] text-navy/60 uppercase">Travellers</p>
+              <div className="mt-3 flex items-stretch border border-navy/20">
                 <button
                   type="button"
                   aria-label="Fewer travellers"
                   onClick={() => setTravellers((v) => Math.max(1, v - 1))}
-                  className="w-14 border-r border-bone/20 text-xl hover:bg-volt hover:text-ink"
+                  className="w-14 border-r border-navy/20 text-xl hover:bg-cyan hover:text-white"
                 >
                   −
                 </button>
@@ -187,7 +231,7 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
                   type="button"
                   aria-label="More travellers"
                   onClick={() => setTravellers((v) => Math.min(20, v + 1))}
-                  className="w-14 border-l border-bone/20 text-xl hover:bg-volt hover:text-ink"
+                  className="w-14 border-l border-navy/20 text-xl hover:bg-cyan hover:text-white"
                 >
                   +
                 </button>
@@ -197,7 +241,7 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
         </Step>
 
         <Step index="03" title="Comfort level">
-          <div role="radiogroup" aria-label="Comfort level" className="grid gap-px bg-bone/10 sm:grid-cols-3">
+          <div role="radiogroup" aria-label="Comfort level" className="grid gap-px bg-navy/10 sm:grid-cols-3">
             {tiers.map((t) => (
               <button
                 key={t.id}
@@ -205,10 +249,10 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
                 role="radio"
                 aria-checked={tier === t.id}
                 onClick={() => setTier(t.id)}
-                className={`p-5 text-left transition-colors ${tier === t.id ? "bg-bone text-ink" : "bg-ink hover:bg-ink-3"}`}
+                className={`p-5 text-left transition-colors ${tier === t.id ? "bg-navy text-white" : "bg-white hover:bg-mist"}`}
               >
                 <span className="block font-display text-2xl font-bold uppercase">{t.label}</span>
-                <span className={`mt-1 block text-sm ${tier === t.id ? "text-ink/70" : "text-bone/60"}`}>{t.note}</span>
+                <span className={`mt-1 block text-sm ${tier === t.id ? "text-white/70" : "text-navy/60"}`}>{t.note}</span>
                 <span className="mt-4 block font-mono text-[0.65rem] tracking-[0.2em] uppercase">≈ {formatUSD(t.rate)} / night</span>
               </button>
             ))}
@@ -227,35 +271,48 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
 
       {/* manifest */}
       <aside className="lg:col-span-5">
-        <div className="sticky top-28 border border-bone/15 bg-ink-2">
-          <div className="flex items-center justify-between border-b border-bone/10 px-5 py-3 font-mono text-[0.6rem] tracking-[0.25em] uppercase">
-            <span className="text-volt">◆ Route manifest</span>
-            <span className="text-dust">{route.length} stops</span>
+        <div className="sticky top-28 border border-navy/15 bg-mist text-navy">
+          <div className="flex items-center justify-between border-b border-navy/10 px-5 py-3 font-mono text-[0.6rem] tracking-[0.25em] uppercase">
+            <span className="text-cyan">◆ Route manifest</span>
+            <span className="text-navy/60">{route.length} stops</span>
           </div>
           <div className="p-4">
-            <KenyaMap route={route} activeSlug={route.at(-1) ?? null} onSelect={toggle} />
+            {abroad.length === 0 ? (
+              <KenyaMap route={route} activeSlug={route.at(-1) ?? null} onSelect={toggle} />
+            ) : (
+              <WorldRouteMap
+                slugs={destinations.filter((d) => d.collection !== "kenya").map((d) => d.slug)}
+                selected={abroad}
+                onSelect={toggle}
+              />
+            )}
+            {abroad.length > 0 && kenyaStops > 0 && (
+              <p className="mt-2 font-mono text-[0.6rem] tracking-[0.2em] text-navy/60 uppercase">
+                + {kenyaStops} Kenya {kenyaStops === 1 ? "stop" : "stops"} from NBO
+              </p>
+            )}
           </div>
-          <div className="space-y-4 border-t border-bone/10 p-5">
+          <div className="space-y-4 border-t border-navy/10 p-5">
             <p className="min-h-6 font-mono text-xs tracking-[0.15em] uppercase">
               {route.length ? (
                 route.map((s, i) => (
                   <span key={s}>
-                    {i > 0 && <span className="text-laterite"> → </span>}
+                    {i > 0 && <span className="text-pink"> → </span>}
                     {getDestination(s)?.code}
                   </span>
                 ))
               ) : (
-                <span className="text-dust">No stops yet</span>
+                <span className="text-navy/60">No stops yet</span>
               )}
             </p>
-            <dl className="grid grid-cols-3 gap-px bg-bone/10 text-center">
+            <dl className="grid grid-cols-3 gap-px bg-navy/10 text-center">
               {[
                 ["Month", months[month]],
                 ["Days", days],
                 ["Guests", travellers],
               ].map(([k, v]) => (
-                <div key={k} className="bg-ink-2 py-3">
-                  <dt className="font-mono text-[0.55rem] tracking-[0.2em] text-dust uppercase">{k}</dt>
+                <div key={k} className="bg-mist py-3">
+                  <dt className="font-mono text-[0.55rem] tracking-[0.2em] text-navy/60 uppercase">{k}</dt>
                   <dd className="font-display text-2xl font-bold">{v}</dd>
                 </div>
               ))}
@@ -266,37 +323,37 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="border-l-2 border-laterite bg-laterite/10 px-3 py-2 text-xs text-bone/80"
+                  className="border-l-2 border-pink bg-pink/10 px-3 py-2 text-xs text-navy/80"
                 >
                   {offSeason.map((d) => d?.name).join(", ")} {offSeason.length > 1 ? "are" : "is"} in low season in {months[month]}. Expect rain, but also fewer people and lower rates.
                 </motion.p>
               )}
             </AnimatePresence>
-            <div className="flex items-end justify-between border-t border-bone/10 pt-4">
+            <div className="flex items-end justify-between border-t border-navy/10 pt-4">
               <div>
-                <p className="font-mono text-[0.6rem] tracking-[0.2em] text-dust uppercase">Indicative total</p>
-                <p className="font-display text-5xl leading-none font-black text-laterite tabular-nums">{formatUSD(perPerson * travellers)}</p>
+                <p className="font-mono text-[0.6rem] tracking-[0.2em] text-navy/60 uppercase">Indicative total</p>
+                <p className="font-display text-5xl leading-none font-black text-pink tabular-nums">{formatUSD(perPerson * travellers)}</p>
               </div>
-              <p className="text-right font-mono text-[0.6rem] tracking-[0.2em] text-dust uppercase">
+              <p className="text-right font-mono text-[0.6rem] tracking-[0.2em] text-navy/60 uppercase">
                 {formatUSD(perPerson)}
                 <br />
                 per person
               </p>
             </div>
-            {state.status === "error" && hasErrors && (
-              <p role="alert" className="font-mono text-xs text-laterite">
+            {state.status === "error" && (hasErrors || Object.keys(state.fields).length === 0) && (
+              <p role="alert" className="font-mono text-xs text-pink">
                 {state.message}
               </p>
             )}
             <button
               type="submit"
               disabled={pending}
-              className="group flex w-full items-center justify-between bg-laterite px-6 py-5 font-mono text-xs font-semibold tracking-[0.25em] text-ink uppercase transition-colors [--cut:14px] chamfer-tr hover:bg-volt disabled:opacity-60"
+              className="group flex w-full items-center justify-between bg-pink px-6 py-5 font-mono text-xs font-semibold tracking-[0.25em] text-white uppercase transition-colors [--cut:14px] chamfer-tr hover:bg-cyan disabled:opacity-60"
             >
               {pending ? "Transmitting…" : "Send to a planner"}
               <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
             </button>
-            <p className="text-center text-[0.7rem] text-dust">Free, with no obligation. A real person replies.</p>
+            <p className="text-center text-[0.7rem] text-navy/60">Free, with no obligation. A real person replies.</p>
           </div>
         </div>
       </aside>
@@ -307,15 +364,15 @@ export function TripBuilder({ initialTour, initialDestination }: { initialTour?:
 function Step({ index, title, hint, error, children }: { index: string; title: string; hint?: string; error?: string; children: ReactNode }) {
   return (
     <fieldset>
-      <legend className="flex w-full items-baseline justify-between gap-4 border-b border-bone/10 pb-4">
+      <legend className="flex w-full items-baseline justify-between gap-4 border-b border-navy/10 pb-4">
         <span className="flex items-baseline gap-4">
-          <span className="font-mono text-xs text-laterite">{index}</span>
+          <span className="font-mono text-xs text-pink">{index}</span>
           <span className="font-display text-4xl font-black uppercase md:text-5xl">{title}</span>
         </span>
-        {hint && <span className="hidden font-mono text-[0.6rem] tracking-[0.2em] text-dust uppercase md:inline">{hint}</span>}
+        {hint && <span className="hidden font-mono text-[0.6rem] tracking-[0.2em] text-navy/60 uppercase md:inline">{hint}</span>}
       </legend>
       {error && (
-        <p role="alert" className="mt-4 font-mono text-xs text-laterite">
+        <p role="alert" className="mt-4 font-mono text-xs text-pink">
           ✕ {error}
         </p>
       )}
@@ -343,7 +400,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="font-mono text-[0.65rem] tracking-[0.2em] text-dust uppercase">{label}</span>
+      <span className="font-mono text-[0.65rem] tracking-[0.2em] text-navy/60 uppercase">{label}</span>
       <input
         name={name}
         type={type}
@@ -351,11 +408,11 @@ function Field({
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={Boolean(error)}
-        className={`mt-2 block w-full border-b bg-transparent py-3 text-lg outline-none transition-colors placeholder:text-bone/30 focus:border-volt ${
-          error ? "border-laterite" : "border-bone/25"
+        className={`mt-2 block w-full border-b bg-transparent py-3 text-lg outline-none transition-colors placeholder:text-navy/30 focus:border-cyan ${
+          error ? "border-pink" : "border-navy/25"
         }`}
       />
-      {error && <span className="mt-2 block font-mono text-[0.65rem] text-laterite">{error}</span>}
+      {error && <span className="mt-2 block font-mono text-[0.65rem] text-pink">{error}</span>}
     </label>
   );
 }

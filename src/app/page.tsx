@@ -1,14 +1,16 @@
 import { CtaBand } from "@/components/cta-band";
 import { DestinationIndex } from "@/components/destination-index";
+import { BeyondKenya } from "@/components/home/beyond-kenya";
 import { ExpeditionRail } from "@/components/home/expedition-rail";
 import { FieldLogs } from "@/components/home/field-logs";
 import { Hero } from "@/components/home/hero";
 import { Manifesto } from "@/components/home/manifesto";
 import { SeasonScanner } from "@/components/home/season-scanner";
-import { Reveal } from "@/components/reveal";
+import { ServicesShowcase } from "@/components/home/services-showcase";
+import { PhotoStrip } from "@/components/photo-strip";
+import { SectionHead } from "@/components/section-head";
 import { TourCard } from "@/components/tour-card";
-import { ButtonLink, Eyebrow } from "@/components/ui";
-import { destinations } from "@/data/destinations";
+import { kenyaDestinations } from "@/data/destinations";
 import { tours } from "@/data/tours";
 
 export default function HomePage() {
@@ -17,36 +19,79 @@ export default function HomePage() {
       <Hero />
       <Manifesto />
 
-      <section id="destinations" className="relative bg-ink">
+      <section id="services" className="bg-white text-navy">
         <div className="mx-auto max-w-[1600px] px-4 py-24 sm:px-8 md:py-32">
           <SectionHead
             index="01"
-            eyebrow="Destination index"
+            eyebrow="Our services"
             title={
               <>
-                Eleven places. <span className="font-serif font-normal normal-case text-dust italic">One</span> country.
+                Everything <span className="font-serif font-normal normal-case text-pink italic">but</span> the packing
               </>
             }
-            body="Every destination here is one we drive, fly into and know personally. Hover a row to find it on the map."
-            cta={{ href: "/destinations", label: "All destinations" }}
+            body="Flights, hotels, visas, transfers, safaris and conferences. Book one or let us handle the whole trip."
+            cta={{ href: "/services", label: "All services" }}
           />
           <div className="mt-16">
-            <DestinationIndex items={destinations.slice(0, 8)} />
+            <ServicesShowcase />
           </div>
         </div>
       </section>
 
-      <section className="relative border-t border-bone/10 bg-ink py-24 md:py-32">
-        <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
+      <PhotoStrip />
+
+      <section id="kenya" className="relative bg-navy-deep text-white">
+        <div className="survey-grid absolute inset-0 opacity-50" aria-hidden />
+        <div className="relative mx-auto max-w-[1600px] px-4 py-24 sm:px-8 md:py-32">
           <SectionHead
+            tone="dark"
             index="02"
-            eyebrow="Expeditions"
+            eyebrow="Destinations · Kenya"
             title={
               <>
-                Routes <span className="font-serif font-normal normal-case text-laterite italic">already</span> tested
+                Eleven places. <span className="font-serif font-normal normal-case text-blush italic">One</span> country.
               </>
             }
-            body="Six itineraries our guides have refined over many seasons. Use one as it is or as a starting point for your own."
+            body="Home ground. We drive, fly into and know every one of these personally. Hover a row to find it on the map."
+            cta={{ href: "/destinations#kenya", label: "Kenya destinations" }}
+          />
+          <div className="mt-16">
+            <DestinationIndex items={kenyaDestinations.slice(0, 8)} />
+          </div>
+        </div>
+      </section>
+
+      <section id="beyond" className="bg-mist text-navy">
+        <div className="mx-auto max-w-[1600px] px-4 py-24 sm:px-8 md:py-32">
+          <SectionHead
+            index="03"
+            eyebrow="Africa & the world"
+            title={
+              <>
+                Beyond the <span className="font-serif font-normal normal-case text-cyan italic">border</span>
+              </>
+            }
+            body="Gorillas in Rwanda, the Serengeti, the Cape and the islands, then Bali, the Maldives, Dubai, Greece and Italy. Every route starts at NBO."
+            cta={{ href: "/destinations", label: "All destinations" }}
+          />
+          <div className="mt-16">
+            <BeyondKenya />
+          </div>
+        </div>
+      </section>
+
+      <section className="relative bg-navy py-24 text-white md:py-32">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
+          <SectionHead
+            tone="dark"
+            index="04"
+            eyebrow="Safari expeditions"
+            title={
+              <>
+                Routes <span className="font-serif font-normal normal-case text-blush italic">already</span> tested
+              </>
+            }
+            body="Six safari and coast itineraries our guides have refined over many seasons. Use one as it is or as a starting point."
             cta={{ href: "/tours", label: "Compare expeditions" }}
           />
         </div>
@@ -61,17 +106,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="seasons" className="survey-grid relative scroll-mt-20 border-t border-bone/10 bg-ink">
+      <section id="seasons" className="survey-grid relative scroll-mt-20 bg-white text-navy">
         <div className="mx-auto max-w-[1600px] px-4 py-24 sm:px-8 md:py-32">
           <SectionHead
-            index="03"
-            eyebrow="Season scanner"
+            index="05"
+            eyebrow="Kenya season scanner"
             title={
               <>
-                When to go, <span className="font-serif font-normal normal-case text-volt italic">month</span> by month
+                When to go, <span className="font-serif font-normal normal-case text-pink italic">month</span> by month
               </>
             }
-            body="Kenya has two rainy seasons, and each region responds differently. Pick a month to see which destinations are at their best."
+            body="Kenya has two rainy seasons, and each region responds differently. Pick a month to see which places are at their best."
           />
           <div className="mt-16">
             <SeasonScanner />
@@ -82,40 +127,5 @@ export default function HomePage() {
       <FieldLogs />
       <CtaBand />
     </>
-  );
-}
-
-function SectionHead({
-  index,
-  eyebrow,
-  title,
-  body,
-  cta,
-}: {
-  index: string;
-  eyebrow: string;
-  title: React.ReactNode;
-  body: string;
-  cta?: { href: string; label: string };
-}) {
-  return (
-    <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
-      <Reveal className="lg:col-span-8">
-        <Eyebrow index={index} className="text-bone/70">
-          {eyebrow}
-        </Eyebrow>
-        <h2 className="mt-6 font-display text-[14vw] leading-[0.86] font-black uppercase sm:text-[9vw] lg:text-[6.5rem]">
-          {title}
-        </h2>
-      </Reveal>
-      <Reveal delay={0.15} className="flex flex-col items-start gap-6 lg:col-span-4">
-        <p className="max-w-md leading-relaxed text-bone/60">{body}</p>
-        {cta && (
-          <ButtonLink href={cta.href} variant="ghost">
-            {cta.label}
-          </ButtonLink>
-        )}
-      </Reveal>
-    </div>
   );
 }
