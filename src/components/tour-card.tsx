@@ -3,7 +3,6 @@ import Link from "next/link";
 import { photos } from "@/assets/photos";
 import { getDestination } from "@/data/destinations";
 import type { Tour } from "@/data/tours";
-import { formatUSD } from "@/lib/format";
 import { SegmentBar } from "./ui";
 
 /** White expedition card; reads well on both navy and white sections. */
@@ -36,7 +35,7 @@ export function TourCard({ tour, className = "" }: { tour: Tour; className?: str
           </h3>
           <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-navy/70">{tour.pitch}</p>
 
-          <dl className="mt-auto grid grid-cols-3 gap-4 border-t border-navy/10 pt-5">
+          <dl className="mt-auto grid grid-cols-2 gap-4 border-t border-navy/10 pt-5">
             <div>
               <dt className="font-mono text-[0.58rem] tracking-[0.2em] text-navy/55 uppercase">Days</dt>
               <dd className="mt-1 font-display text-2xl font-bold">{tour.days}</dd>
@@ -46,10 +45,6 @@ export function TourCard({ tour, className = "" }: { tour: Tour; className?: str
               <dd className="mt-2.5">
                 <SegmentBar value={tour.intensity} />
               </dd>
-            </div>
-            <div className="text-right">
-              <dt className="font-mono text-[0.58rem] tracking-[0.2em] text-navy/55 uppercase">From</dt>
-              <dd className="mt-1 font-display text-2xl font-bold text-pink">{formatUSD(tour.price)}</dd>
             </div>
           </dl>
         </div>

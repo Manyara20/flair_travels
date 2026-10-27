@@ -12,7 +12,7 @@ import { WorldRouteMap } from "@/components/world-route-map";
 import { distanceFromNairobi } from "@/lib/geo";
 import { collections, destinations, destinationsIn, formatCoords, getDestination, months } from "@/data/destinations";
 import { tours } from "@/data/tours";
-import { formatUSD, pad } from "@/lib/format";
+import { pad } from "@/lib/format";
 
 export function generateStaticParams() {
   return destinations.map((d) => ({ slug: d.slug }));
@@ -52,7 +52,6 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
     inKenya
       ? { label: "From Nairobi", value: d.access }
       : { label: "From NBO", value: `${distanceFromNairobi(d.lat, d.lon).toLocaleString("en-US")} km` },
-    { label: "From", value: `${formatUSD(d.fromPrice)} pp` },
   ];
 
   return (

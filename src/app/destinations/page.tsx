@@ -10,7 +10,6 @@ import { Eyebrow } from "@/components/ui";
 import { WorldRouteMap } from "@/components/world-route-map";
 import { distanceFromNairobi } from "@/lib/geo";
 import { collections, destinationsIn } from "@/data/destinations";
-import { formatUSD } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Destinations",
@@ -102,10 +101,6 @@ export default function DestinationsPage() {
                               </h3>
                               <p className="mt-2 font-serif text-lg text-white/90 italic">{d.tagline}</p>
                             </div>
-                            <p className="shrink-0 text-right">
-                              <span className="block font-mono text-[0.55rem] tracking-[0.2em] uppercase">From</span>
-                              <span className="font-display text-2xl font-black">{formatUSD(d.fromPrice)}</span>
-                            </p>
                           </div>
                         </Link>
                       </Reveal>

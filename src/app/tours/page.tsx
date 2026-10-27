@@ -4,7 +4,6 @@ import { PageHero } from "@/components/page-hero";
 import { TourBrowser } from "@/components/tour-browser";
 import { TourCard } from "@/components/tour-card";
 import { tours } from "@/data/tours";
-import { formatUSD } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Expeditions",
@@ -12,7 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default function ToursPage() {
-  const cheapest = Math.min(...tours.map((t) => t.price));
   const cards = Object.fromEntries(tours.map((t) => [t.slug, <TourCard key={t.slug} tour={t} className="h-full" />]));
 
   return (
@@ -31,7 +29,7 @@ export default function ToursPage() {
         intro="Each expedition is a fixed route that we adjust to you. Change the pace, upgrade the camps or add the coast at the end. Every one runs privately, with your own vehicle and guide."
         aside={
           <p className="font-mono text-[0.65rem] tracking-[0.25em] text-sky uppercase">
-            {tours.length} routes · 4–14 days · from {formatUSD(cheapest)} pp
+            {tours.length} routes · 4–14 days
           </p>
         }
       />

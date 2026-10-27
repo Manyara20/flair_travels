@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { photos } from "@/assets/photos";
 import { collections, type Destination, destinations } from "@/data/destinations";
-import { formatUSD } from "@/lib/format";
 import { distanceFromNairobi } from "@/lib/geo";
 import { WorldRouteMap } from "../world-route-map";
 
@@ -83,7 +82,6 @@ function Tile({ d, tall, active, onActive }: { d: Destination; tall: boolean; ac
             {d.country !== d.name ? d.country : d.region} · {distanceFromNairobi(d.lat, d.lon).toLocaleString("en-US")} km
           </p>
           <p className="font-display text-2xl leading-none font-black uppercase md:text-3xl">{d.name}</p>
-          <p className="mt-1 font-mono text-[0.6rem] tracking-[0.15em] text-white/70 uppercase">From {formatUSD(d.fromPrice)}</p>
         </div>
       </Link>
     </li>

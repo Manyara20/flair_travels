@@ -6,7 +6,7 @@ import Link from "next/link";
 import { type MouseEvent, useState } from "react";
 import { photos } from "@/assets/photos";
 import { type Destination, formatCoords } from "@/data/destinations";
-import { formatUSD, pad } from "@/lib/format";
+import { pad } from "@/lib/format";
 import { KenyaMap } from "./kenya-map";
 
 /**
@@ -60,10 +60,6 @@ export function DestinationIndex({ items }: { items: Destination[] }) {
                   </span>
                 </span>
                 <span className="relative flex items-center gap-4 text-right">
-                  <span className="hidden sm:block">
-                    <span className="block font-mono text-[0.6rem] tracking-[0.2em] text-sky/70 uppercase">From</span>
-                    <span className="block font-display text-2xl font-bold">{formatUSD(d.fromPrice)}</span>
-                  </span>
                   <span className="flex size-10 items-center justify-center border border-white/20 transition-colors duration-300 group-hover:border-pink group-hover:bg-pink group-hover:text-white">
                     →
                   </span>

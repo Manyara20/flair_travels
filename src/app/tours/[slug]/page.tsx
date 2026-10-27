@@ -9,7 +9,6 @@ import { TourCard } from "@/components/tour-card";
 import { ButtonLink, CropMarks, Eyebrow, SegmentBar } from "@/components/ui";
 import { getDestination } from "@/data/destinations";
 import { getTour, tours } from "@/data/tours";
-import { formatUSD } from "@/lib/format";
 
 export function generateStaticParams() {
   return tours.map((t) => ({ slug: t.slug }));
@@ -66,10 +65,6 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
             <span className="flex items-center gap-3">
               <span className="text-sky">Intensity</span>
               <SegmentBar value={tour.intensity} />
-            </span>
-            <span className="text-pink">
-              <span className="text-sky">From </span>
-              {formatUSD(tour.price)} pp
             </span>
           </div>
         </div>
@@ -131,17 +126,6 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-6 flex items-end justify-between border-t border-navy/10 pt-6">
-                  <div>
-                    <p className="font-mono text-[0.6rem] tracking-[0.25em] text-navy/60 uppercase">From, per person</p>
-                    <p className="font-display text-5xl font-black text-pink">{formatUSD(tour.price)}</p>
-                  </div>
-                  <p className="text-right font-mono text-[0.6rem] tracking-[0.2em] text-navy/60 uppercase">
-                    Sharing
-                    <br />
-                    Private vehicle
-                  </p>
-                </div>
               </div>
               <ButtonLink href={`/plan?tour=${tour.slug}`} className="w-full">
                 Request this expedition

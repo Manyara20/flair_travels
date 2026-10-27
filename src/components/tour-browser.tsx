@@ -4,12 +4,11 @@ import { AnimatePresence, motion } from "motion/react";
 import { type ReactNode, useState } from "react";
 import { type TourStyle, tourStyles, tours } from "@/data/tours";
 
-type Sort = "days" | "price-asc" | "price-desc";
+type Sort = "days-asc" | "days-desc";
 
 const sorts: { value: Sort; label: string }[] = [
-  { value: "days", label: "Duration" },
-  { value: "price-asc", label: "Price ↑" },
-  { value: "price-desc", label: "Price ↓" },
+  { value: "days-asc", label: "Duration ↑" },
+  { value: "days-desc", label: "Duration ↓" },
 ];
 
 /**
@@ -18,11 +17,11 @@ const sorts: { value: Sort; label: string }[] = [
  */
 export function TourBrowser({ cards }: { cards: Record<string, ReactNode> }) {
   const [style, setStyle] = useState<TourStyle | "All">("All");
-  const [sort, setSort] = useState<Sort>("days");
+  const [sort, setSort] = useState<Sort>("days-asc");
 
   const visible = tours
     .filter((t) => style === "All" || t.style === style)
-    .sort((a, b) => (sort === "days" ? a.days - b.days : sort === "price-asc" ? a.price - b.price : b.price - a.price));
+    .sort((a, b) => (sort === "days-asc" ? a.days - b.days : b.days - a.days));
 
   return (
     <div>
